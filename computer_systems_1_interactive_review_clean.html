@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Computer Systems 1 End-of-Year Exam Review</title>
+  <style>
+    :root{
+      --bg:#f3f7fb; --card:#ffffff; --ink:#172033; --muted:#5d6b82;
+      --brand:#2457d6; --brand2:#0ea5e9; --accent:#f59e0b;
+      --good:#16a34a; --bad:#dc2626; --soft:#e8f1ff; --line:#d9e2ef;
+      --purple:#7c3aed; --dark:#0f172a;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top left,#dbeafe 0,#f8fafc 38%,#eef6ff 100%);
+      color:var(--ink);
+    }
+    header{
+      background:linear-gradient(135deg,#102a43,#2457d6 55%,#0ea5e9);
+      color:white; padding:34px 22px 38px; position:relative; overflow:hidden;
+    }
+    header:after{
+      content:""; position:absolute; right:-90px; top:-90px; width:260px; height:260px; border-radius:50%;
+      background:rgba(255,255,255,.14);
+    }
+    .wrap{max-width:1180px;margin:auto}
+    .eyebrow{letter-spacing:.12em;text-transform:uppercase;font-size:.78rem;opacity:.86;font-weight:800}
+    h1{font-size:clamp(2rem,4vw,4rem);line-height:1.02;margin:10px 0 12px}
+    .subtitle{max-width:850px;font-size:1.08rem;line-height:1.55;opacity:.96}
+    main{padding:26px 18px 50px}
+    .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:-48px;position:relative;z-index:2}
+    .std{
+      background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;
+      box-shadow:0 12px 30px rgba(15,23,42,.09);
+    }
+    .std b{display:block;font-size:1rem;margin-bottom:6px}
+    .std .pct{font-size:1.7rem;font-weight:900;color:var(--brand);margin:6px 0}
+    .std p{margin:0;color:var(--muted);font-size:.86rem;line-height:1.35}
+    .panel{
+      background:rgba(255,255,255,.86);backdrop-filter:blur(8px);
+      border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 12px 28px rgba(15,23,42,.08);
+      margin-top:22px;
+    }
+    h2{margin:0 0 10px;font-size:1.55rem}
+    .tabs{display:flex;flex-wrap:wrap;gap:10px;margin:15px 0}
+    button{
+      border:0;border-radius:14px;padding:12px 15px;font-weight:800;cursor:pointer;
+      background:#e2e8f0;color:#172033;transition:.18s transform,.18s box-shadow,.18s background;
+    }
+    button:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(15,23,42,.12)}
+    button.active{background:linear-gradient(135deg,var(--brand),var(--brand2));color:#fff}
+    button.primary{background:linear-gradient(135deg,var(--brand),var(--purple));color:white}
+    button.good{background:var(--good);color:white}
+    button.warn{background:var(--accent);color:#111827}
+    .layout{display:grid;grid-template-columns:290px 1fr;gap:18px}
+    .side{position:sticky;top:14px;align-self:start}
+    .progressBox{background:var(--dark);color:white;border-radius:20px;padding:18px}
+    .meter{height:12px;background:rgba(255,255,255,.18);border-radius:999px;overflow:hidden;margin:12px 0}
+    .bar{height:100%;width:0;background:linear-gradient(90deg,#22c55e,#38bdf8);transition:.25s}
+    .mini{font-size:.9rem;color:#dbeafe;line-height:1.45}
+    .legend{display:grid;gap:8px;margin-top:14px}
+    .legend span{display:flex;align-items:center;gap:8px;font-size:.9rem}
+    .dot{width:13px;height:13px;border-radius:50%;display:inline-block;background:#cbd5e1}
+    .dot.answered{background:var(--brand2)} .dot.correct{background:var(--good)} .dot.incorrect{background:var(--bad)}
+    .qcard{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
+    .qtop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+    .tag{background:var(--soft);color:#1d4ed8;border-radius:999px;padding:6px 10px;font-size:.78rem;font-weight:900;white-space:nowrap}
+    .question{font-size:1.05rem;font-weight:850;line-height:1.45;margin:10px 0 12px}
+    .choices{display:grid;gap:9px}
+    label.choice{
+      display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid var(--line);
+      border-radius:14px;background:#f8fafc;cursor:pointer;line-height:1.35;
+    }
+    label.choice:hover{border-color:#93c5fd;background:#eff6ff}
+    input[type="radio"]{margin-top:3px;accent-color:var(--brand)}
+    .feedback{display:none;margin-top:12px;padding:13px;border-radius:14px;line-height:1.45}
+    .feedback.correct{display:block;background:#dcfce7;border:1px solid #86efac;color:#14532d}
+    .feedback.incorrect{display:block;background:#fee2e2;border:1px solid #fecaca;color:#7f1d1d}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+    .scoreCard{
+      display:none;border-radius:22px;padding:20px;margin-bottom:16px;
+      background:linear-gradient(135deg,#ecfeff,#eef2ff);border:1px solid #bfdbfe;
+    }
+    .scoreBig{font-size:3rem;font-weight:950;margin:6px 0;color:var(--brand)}
+    .topicGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin-top:12px}
+    .topic{background:white;border:1px solid var(--line);border-radius:14px;padding:12px}
+    .topic b{display:block;margin-bottom:4px}
+    .reviewList{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+    .reviewItem{background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:12px}
+    details{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin:10px 0}
+    summary{font-weight:900;cursor:pointer}
+    .hidden{display:none}
+    footer{text-align:center;color:var(--muted);padding:25px;font-size:.88rem}
+    @media(max-width:900px){.grid{grid-template-columns:1fr 1fr;margin-top:0}.layout{grid-template-columns:1fr}.side{position:static}}
+    @media(max-width:560px){.grid{grid-template-columns:1fr}.qtop{display:block}.tag{display:inline-block;margin-top:6px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Freshman CTE IT Support Review</div>
+    <h1>Computer Systems 1 End-of-Year Exam Practice</h1>
+    <p class="subtitle">Practice the major exam topics: mobile devices, networking, hardware, troubleshooting, and operational procedures. Choose Version A, B, or C. Each version has different questions, instant feedback, and a final score report.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="grid" aria-label="Exam blueprint">
+    <div class="std"><b>1. Mobile Devices</b><div class="pct">13%</div><p>Laptop parts, mobile features, syncing, cloud storage.</p></div>
+    <div class="std"><b>2. Networking</b><div class="pct">19%</div><p>Ports, protocols, SOHO networks, wireless, IP settings, tools.</p></div>
+    <div class="std"><b>3. Hardware</b><div class="pct">41%</div><p>Cables, RAM, storage, CPUs, motherboards, printers, custom PCs.</p></div>
+    <div class="std"><b>4. Troubleshooting</b><div class="pct">22%</div><p>Best practices, power, storage, display, and network symptoms.</p></div>
+    <div class="std"><b>5. Procedures</b><div class="pct">6%</div><p>Professionalism, communication, documentation, privacy.</p></div>
+  </section>
+
+  <section class="panel">
+    <h2>Choose a Practice Exam</h2>
+    <p class="mini" style="color:var(--muted)">Tip: Try Version A first, review your feedback, then take Version B and C to strengthen different concepts.</p>
+    <div class="tabs">
+      <button class="active" onclick="loadExam('A', this)">Version A: Foundation</button>
+      <button onclick="loadExam('B', this)">Version B: Application</button>
+      <button onclick="loadExam('C', this)">Version C: Exam Challenge</button>
+    </div>
+    <div class="reviewList">
+      <div class="reviewItem"><b>Before you start:</b><br>Read each question like a help-desk technician. Ask: What is the problem? What tool, part, or concept fits best?</div>
+      <div class="reviewItem"><b>Passing strategy:</b><br>Hardware is the largest section, so spend extra time on connectors, storage, RAM, CPU, motherboards, power supplies, printers, and PC builds.</div>
+      <div class="reviewItem"><b>After scoring:</b><br>Use the topic report to decide what to review next. Retake a different version instead of memorizing one answer set.</div>
+    </div>
+  </section>
+
+  <section class="panel layout">
+    <aside class="side">
+      <div class="progressBox">
+        <h2 id="examTitle">Version A</h2>
+        <div class="mini">Questions answered: <b id="answered">0</b>/<b id="total">0</b></div>
+        <div class="meter"><div class="bar" id="bar"></div></div>
+        <div class="mini" id="status">Select answers, then submit for feedback.</div>
+        <div class="legend">
+          <span><i class="dot"></i> Not answered</span>
+          <span><i class="dot answered"></i> Answered</span>
+          <span><i class="dot correct"></i> Correct after submit</span>
+          <span><i class="dot incorrect"></i> Incorrect after submit</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="primary" onclick="gradeExam()">Submit & Score</button>
+        <button class="warn" onclick="resetExam()">Reset This Version</button>
+      </div>
+    </aside>
+    <section>
+      <div class="scoreCard" id="scoreCard">
+        <div>Your Score</div>
+        <div class="scoreBig" id="scoreText">0%</div>
+        <div id="scoreMessage"></div>
+        <div class="topicGrid" id="topicReport"></div>
+      </div>
+      <div id="questions"></div>
+    </section>
+  </section>
+
+</main>
+
+<footer>Computer Systems 1 Practice Review | Built for classroom exam preparation</footer>
+
+<script>
+const exams = {
+A: [
+{t:"Mobile Devices",q:"A student says a laptop only works when the charger is held at a certain angle. Which laptop component is most likely damaged?",c:["Battery","DC jack","Touchpad","Webcam"],a:1,e:"The DC jack is the charging port. If the charger only works at an angle, the port or its connection may be loose or damaged."},
+{t:"Mobile Devices",q:"Which storage option is usually fastest in a modern laptop?",c:["Magnetic hard drive","Hybrid drive","SSD","Optical drive"],a:2,e:"An SSD has no spinning parts and is usually much faster than magnetic or hybrid drives."},
+{t:"Mobile Devices",q:"What does cloud synchronization allow a user to do?",c:["Make a laptop screen brighter","Keep data like contacts, email, and pictures updated across devices","Replace a broken keyboard","Increase CPU clock speed"],a:1,e:"Synchronization keeps selected data updated between devices and cloud services."},
+{t:"Networking",q:"Which port is used by DNS?",c:["21","53","80","3389"],a:1,e:"DNS commonly uses port 53 to translate domain names into IP addresses."},
+{t:"Networking",q:"Which device connects different networks and often shares Internet access in a home?",c:["Router","Hub","Patch panel","Barcode scanner"],a:0,e:"A router connects networks together, such as a home LAN to the Internet."},
+{t:"Networking",q:"A device has an APIPA/link-local address. What does this usually mean?",c:["It received a valid DHCP address","It could not get an address from DHCP","The monitor cable is loose","The printer is out of toner"],a:1,e:"APIPA/link-local addressing often happens when a device cannot contact a DHCP server."},
+{t:"Networking",q:"Which tool is best for checking if an Ethernet cable is wired correctly?",c:["Cable tester","Thermal printer","KVM switch","Smart card reader"],a:0,e:"A cable tester checks network cable continuity and wiring."},
+{t:"Networking",q:"Which wireless frequency usually has longer range but may be more crowded?",c:["2.4 GHz","5 GHz","SATA","HDMI"],a:0,e:"2.4 GHz often travels farther but is more crowded than 5 GHz."},
+{t:"Hardware",q:"Which connector is most commonly used for Ethernet network cables?",c:["RJ-11","RJ-45","Molex","Lightning"],a:1,e:"RJ-45 connectors are used for Ethernet networking."},
+{t:"Hardware",q:"Which cable is commonly used to connect a modern monitor or TV with audio and video?",c:["HDMI","RJ-11","Molex","IDE"],a:0,e:"HDMI carries digital video and audio."},
+{t:"Hardware",q:"Which type of RAM is commonly used in laptops?",c:["SODIMM","RG-6","SATA","RJ-45"],a:0,e:"SODIMM is a smaller RAM module commonly found in laptops."},
+{t:"Hardware",q:"Which storage device has no moving parts?",c:["5400 RPM hard drive","7200 RPM hard drive","SSD","Optical disc"],a:2,e:"SSDs use flash memory and have no moving parts."},
+{t:"Hardware",q:"Which RAID level mirrors data for redundancy?",c:["RAID 0","RAID 1","JBOD","Single channel"],a:1,e:"RAID 1 mirrors data across drives so one drive can fail without losing data."},
+{t:"Hardware",q:"Which motherboard setting area controls boot order and Secure Boot?",c:["BIOS/UEFI","Printer spooler","Cloud storage app","Tone generator"],a:0,e:"BIOS/UEFI contains firmware settings like boot order, TPM, and Secure Boot."},
+{t:"Hardware",q:"What does thermal paste help with?",c:["Transferring heat from CPU to heat sink","Encrypting Wi-Fi","Printing in color","Assigning IP addresses"],a:0,e:"Thermal paste improves heat transfer between the CPU and heat sink."},
+{t:"Hardware",q:"A gaming PC build should prioritize which component?",c:["High-end GPU","RJ-11 connector","Impact printer ribbon","Dial-up modem"],a:0,e:"Gaming PCs need strong graphics performance, so a high-end GPU is important."},
+{t:"Hardware",q:"Which printer type uses toner, imaging drum, and fuser assembly?",c:["Laser","Inkjet","Thermal","Impact"],a:0,e:"Laser printers use toner and a fuser to bond toner to paper."},
+{t:"Hardware",q:"What does a power supply wattage rating help determine?",c:["How many devices/components it can power","How bright a projector is","How many emails can be stored","How fast DNS works"],a:0,e:"The wattage rating tells whether the power supply can support the system’s components."},
+{t:"Troubleshooting",q:"What is the first step in the best-practice troubleshooting method?",c:["Document findings","Identify the problem","Replace the motherboard","Format the drive"],a:1,e:"The first step is to identify the problem by gathering information and questioning the user."},
+{t:"Troubleshooting",q:"A computer loses time and BIOS settings after being unplugged. What is the likely issue?",c:["Bad CMOS battery","Bad HDMI cable","Wrong DNS server","Low printer paper"],a:0,e:"A failing CMOS battery can cause time and firmware settings to reset."},
+{t:"Troubleshooting",q:"A hard drive is making a loud clicking noise. What should a technician suspect?",c:["Drive failure","Incorrect monitor resolution","Bluetooth pairing issue","Printer duplex setting"],a:0,e:"Clicking noises are a warning sign of mechanical hard drive failure."},
+{t:"Troubleshooting",q:"A monitor shows artifacts and incorrect color patterns. Which area should be checked?",c:["Video/display components","DHCP reservations","Printer toner","Cloud sync settings"],a:0,e:"Artifacts and color issues point to video cable, monitor, driver, or GPU problems."},
+{t:"Troubleshooting",q:"A user can connect to Wi-Fi but the signal is very weak. Which symptom matches this?",c:["Low RF signal","SMART error","POST beep","Fuser failure"],a:0,e:"Weak Wi-Fi is commonly described as a low RF signal problem."},
+{t:"Operational Procedures",q:"A customer is frustrated. What should the technician do first?",c:["Argue with the customer","Listen actively and avoid interrupting","Post about it online","Use as much jargon as possible"],a:1,e:"Professional technicians listen, take notes, avoid interrupting, and stay respectful."},
+{t:"Operational Procedures",q:"Why should a technician avoid unnecessary jargon with customers?",c:["It makes communication clearer","It makes the repair slower","It prevents DHCP from working","It damages the CPU"],a:0,e:"Plain language helps customers understand the issue and the next steps."},
+{t:"Networking",q:"Which network type usually covers a small area like a classroom or home?",c:["LAN","WAN","MAN","Satellite"],a:0,e:"A LAN is a local area network, commonly used in homes, classrooms, and offices."},
+{t:"Hardware",q:"Which connector is commonly used for coaxial cable Internet or TV connections?",c:["RG-6","USB-C","RJ-45","SODIMM"],a:0,e:"RG-6 is a common coaxial cable type used for cable TV and cable Internet."}
+],
+B: [
+{t:"Mobile Devices",q:"A laptop has no wireless connection after being dropped. Which internal part might have become disconnected?",c:["Wi-Fi antenna connector","Fuser assembly","RG-59 cable","Printer ribbon"],a:0,e:"The Wi-Fi antenna connector helps the wireless card receive signal. A drop can loosen it."},
+{t:"Mobile Devices",q:"Which mobile device feature is used for location services and maps?",c:["GPS","CMOS","RAID","SMTP"],a:0,e:"GPS provides location data for navigation and mapping."},
+{t:"Mobile Devices",q:"Which data type is commonly synchronized between a phone and cloud account?",c:["Contacts","Thermal paste","Power supply wattage","RJ-45 pins"],a:0,e:"Contacts, email, pictures, music, and apps are common synchronization data types."},
+{t:"Networking",q:"Which protocol is used for secure remote command-line access?",c:["Telnet","SSH","HTTP","POP3"],a:1,e:"SSH uses encryption and is preferred over Telnet for secure remote access."},
+{t:"Networking",q:"Which port is used by HTTP?",c:["25","53","80","143"],a:2,e:"HTTP commonly uses port 80 for web traffic."},
+{t:"Networking",q:"A switch that can be configured with settings such as VLANs is called what?",c:["Managed switch","Unmanaged switch","Impact switch","Thermal switch"],a:0,e:"Managed switches allow configuration and monitoring, unlike basic unmanaged switches."},
+{t:"Networking",q:"Which SOHO firewall setting forwards outside traffic to an inside device?",c:["Port forwarding","Duplex printing","RAID 1","SODIMM"],a:0,e:"Port forwarding directs incoming traffic to a specific internal device or service."},
+{t:"Networking",q:"Which technology lets network cables provide electrical power to devices like access points?",c:["PoE","NFC","APIPA","DVI"],a:0,e:"Power over Ethernet, or PoE, sends power and data through Ethernet cabling."},
+{t:"Hardware",q:"Which cable standard uses 568A or 568B wiring?",c:["Ethernet twisted-pair","HDMI","Lightning","SATA"],a:0,e:"Ethernet twisted-pair cables use 568A or 568B pinout standards."},
+{t:"Hardware",q:"Which connector is commonly used for traditional telephone lines?",c:["RJ-11","RJ-45","USB-C","Molex"],a:0,e:"RJ-11 is commonly associated with telephone connections."},
+{t:"Hardware",q:"What is the benefit of dual-channel RAM when properly installed?",c:["Improved memory performance","More printer toner","A stronger Wi-Fi password","A larger monitor"],a:0,e:"Dual-channel memory can improve memory bandwidth when matching modules are installed correctly."},
+{t:"Hardware",q:"Which SSD type connects directly to the motherboard and can use NVMe?",c:["M.2","RJ-11","VGA","Molex"],a:0,e:"M.2 SSDs install on the motherboard, and many use the NVMe protocol for high speed."},
+{t:"Hardware",q:"Which hard drive speed is faster?",c:["5,400 rpm","7,200 rpm","10,000 rpm","All are the same"],a:2,e:"Higher RPM usually means faster spinning-disk performance. 10,000 rpm is faster than 5,400 or 7,200 rpm."},
+{t:"Hardware",q:"Which motherboard form factor is usually smaller than ATX?",c:["mATX","Full tower","SMTP","RG-6"],a:0,e:"mATX, or microATX, is smaller than standard ATX."},
+{t:"Hardware",q:"What CPU feature allows one physical CPU core to work like two logical processors?",c:["Hyperthreading","Duplexing","NAT","RFID"],a:0,e:"Hyperthreading lets one physical core handle more than one thread."},
+{t:"Hardware",q:"A virtualization workstation should prioritize what?",c:["Maximum RAM and CPU cores","Impact paper","RJ-11 splitters","Low-end cooling only"],a:0,e:"Virtual machines need memory and CPU resources, so RAM and CPU cores are important."},
+{t:"Hardware",q:"Which peripheral lets one keyboard, video display, and mouse control multiple computers?",c:["KVM","NFC reader","ADF scanner","Thermal printer"],a:0,e:"A KVM switch shares keyboard, video, and mouse control among multiple computers."},
+{t:"Hardware",q:"Which printer type commonly uses special heat-sensitive paper?",c:["Thermal","Laser","Inkjet","3D"],a:0,e:"Thermal printers use heat and special thermal paper."},
+{t:"Troubleshooting",q:"After forming a theory of probable cause, what should a technician do next?",c:["Test the theory","Immediately replace every part","Ignore user changes","Delete all files"],a:0,e:"After establishing a theory, the technician tests it to determine the cause."},
+{t:"Troubleshooting",q:"A PC powers on, fans spin, but nothing else gets power. Which troubleshooting category does this fit?",c:["Motherboard, RAM, CPU, or power issue","Printer sharing","Cloud synchronization","Wireless encryption"],a:0,e:"Fans spinning with no power to other devices is listed under motherboard, RAM, CPU, and power symptoms."},
+{t:"Troubleshooting",q:"A drive reports S.M.A.R.T. errors. What should the user do first?",c:["Back up data and plan drive replacement","Increase monitor brightness","Change printer orientation","Use Telnet"],a:0,e:"S.M.A.R.T. errors warn of drive problems, so backing up data is important."},
+{t:"Troubleshooting",q:"A projector image is too dim in a bright room. Which specification matters most?",c:["Lumens/brightness","DHCP port","RAID level","CPU socket"],a:0,e:"Projector brightness is measured in lumens."},
+{t:"Troubleshooting",q:"Two computers on the same network have the same IP address. What problem is this?",c:["IP conflict","POST beep","CMOS reset","Burn-in"],a:0,e:"An IP conflict happens when two devices use the same IP address."},
+{t:"Operational Procedures",q:"Which question best shows active listening?",c:["Can you show me exactly what happens when the problem occurs?","Why did you break it?","Did you even restart it?","This is not my problem."],a:0,e:"Open-ended, respectful questions help narrow the problem without blaming the user."},
+{t:"Operational Procedures",q:"What should a technician do after completing a service?",c:["Document the service and follow up if needed","Delete the ticket","Tell nobody","Share private files"],a:0,e:"Technicians should document services provided and follow up to verify satisfaction."},
+{t:"Networking",q:"Which server gives IP address settings to devices automatically?",c:["DHCP server","Web server","Print server","Syslog server"],a:0,e:"A DHCP server automatically leases IP addresses and network settings."},
+{t:"Hardware",q:"Which adapter would help connect a computer with only USB to a wired network?",c:["USB to Ethernet","DVI to VGA","DVI to HDMI","Molex to RJ-11"],a:0,e:"A USB-to-Ethernet adapter adds a wired network connection."}
+],
+C: [
+{t:"Mobile Devices",q:"A laptop screen is very dim, but an external monitor works. Which laptop display-related part could be involved on older models?",c:["Inverter","RJ-45 connector","DHCP server","Fuser"],a:0,e:"Some laptop screens use an inverter for backlight power. A dim image can point to display/backlight components."},
+{t:"Mobile Devices",q:"Which is an example of wearable technology?",c:["Smartwatch","Patch panel","ATX board","Laser fuser"],a:0,e:"A smartwatch is a wearable device."},
+{t:"Mobile Devices",q:"Synchronizing to an automobile would most likely involve which data?",c:["Contacts and music","CPU thermal paste","RAID 5 parity","Motherboard standoffs"],a:0,e:"Cars often sync phone contacts, music, and other mobile data."},
+{t:"Networking",q:"Which protocol is used to send email from a client or server?",c:["SMTP","POP3","IMAP","RDP"],a:0,e:"SMTP is used for sending email."},
+{t:"Networking",q:"Which ports are used by DHCP?",c:["67/68","80/443","21/22","110/143"],a:0,e:"DHCP commonly uses ports 67 and 68."},
+{t:"Networking",q:"Which device extends wireless coverage in a network?",c:["Access point","Thermal printer","CMOS battery","Impact ribbon"],a:0,e:"An access point provides wireless network access and can extend coverage."},
+{t:"Networking",q:"Which setting can prioritize voice or video traffic on a network?",c:["QoS","JBOD","SODIMM","DVI-D"],a:0,e:"QoS, or Quality of Service, prioritizes certain network traffic."},
+{t:"Networking",q:"Which short-range technology is commonly used for tap-to-pay?",c:["NFC","LTE","DSL","VLAN"],a:0,e:"NFC is short-range communication commonly used for tap-to-pay."},
+{t:"Hardware",q:"Which cable is generally best for very long high-speed network runs between buildings?",c:["Fiber","USB-A","SATA","VGA"],a:0,e:"Fiber supports high speeds over longer distances and is resistant to electromagnetic interference."},
+{t:"Hardware",q:"Which video connector is older and analog?",c:["VGA","HDMI","DisplayPort","USB-C"],a:0,e:"VGA is an older analog video connector."},
+{t:"Hardware",q:"What is ECC RAM designed to do?",c:["Detect and correct memory errors","Increase Wi-Fi range","Melt toner","Forward ports"],a:0,e:"ECC memory can detect and correct certain memory errors."},
+{t:"Hardware",q:"What is RAID 0 mainly used for?",c:["Speed/performance with no redundancy","Mirroring data","Replacing RAM","Encrypting passwords"],a:0,e:"RAID 0 stripes data for performance, but it does not provide redundancy."},
+{t:"Hardware",q:"Which motherboard connector is commonly used for modern graphics cards?",c:["PCIe","IDE","RJ-11","RG-59"],a:0,e:"Modern graphics cards usually use PCIe expansion slots."},
+{t:"Hardware",q:"What does TPM help support?",c:["Security features such as drive encryption","Printer paper feed","Analog video","Ethernet crimping"],a:0,e:"TPM supports security features, including drive encryption and platform trust."},
+{t:"Hardware",q:"Which component keeps BIOS/UEFI time and settings when power is off?",c:["CMOS battery","Access point","Fuser assembly","RJ-45 plug"],a:0,e:"The CMOS battery helps preserve firmware settings and time."},
+{t:"Hardware",q:"Which workstation benefits from maximum RAM and high-end video?",c:["Graphic/CAD/CAM design workstation","Thin client","Dial-up terminal","Basic print server only"],a:0,e:"Graphic/CAD/CAM workstations need strong graphics performance, SSDs, and maximum RAM."},
+{t:"Hardware",q:"Which printer technology uses a ribbon and tractor feed?",c:["Impact","Laser","Thermal","Virtual"],a:0,e:"Impact printers use a print head, ribbon, and often tractor-feed paper."},
+{t:"Hardware",q:"Which print option prints on both sides of paper?",c:["Duplex","Collate","Orientation","Quality"],a:0,e:"Duplex printing means printing on both sides."},
+{t:"Troubleshooting",q:"Why should a technician perform backups before making changes when possible?",c:["To protect user data","To increase monitor size","To make DHCP slower","To lower projector lumens"],a:0,e:"Backups protect user data before troubleshooting or repair changes."},
+{t:"Troubleshooting",q:"A PC shows smoke or a burning smell. What should the technician do?",c:["Stop using it and address the safety issue","Keep testing games","Ignore it","Spray water inside immediately"],a:0,e:"Smoke or burning smells are serious safety signs. Power down safely and follow procedure."},
+{t:"Troubleshooting",q:"A system attempts to boot to the wrong device. Where should you check first?",c:["BIOS/UEFI boot order","Printer driver quality","NFC settings","SMTP server"],a:0,e:"Boot order is controlled in BIOS/UEFI."},
+{t:"Troubleshooting",q:"A display has burn-in. Which component is being troubleshot?",c:["Monitor/display","Storage drive","DHCP server","Keyboard"],a:0,e:"Burn-in is a monitor/display symptom."},
+{t:"Troubleshooting",q:"A Wi-Fi network name does not appear on a laptop. Which symptom matches this?",c:["SSID not found","RAID not found","CMOS reset","Fuser jam"],a:0,e:"A missing wireless network name is an SSID not found issue."},
+{t:"Operational Procedures",q:"Which behavior should be avoided during customer support?",c:["Texting or using social media while helping the customer","Taking notes","Restating the issue","Setting expectations"],a:0,e:"Avoid distractions such as personal calls, texting, and social media while helping customers."},
+{t:"Operational Procedures",q:"How should a technician handle confidential files seen on a customer computer?",c:["Respect privacy and do not disclose them","Post about them","Copy them for later","Show coworkers for fun"],a:0,e:"Technicians must protect confidential and private materials."},
+{t:"Networking",q:"Which connection type generally offers very high speed and low latency through glass or plastic strands?",c:["Fiber","Dial-up","DSL only","Satellite only"],a:0,e:"Fiber Internet uses fiber-optic lines and is generally very fast."},
+{t:"Hardware",q:"A NAS used for file sharing and media streaming should commonly include what?",c:["Gigabit NIC and RAID array","Only a VGA cable","A print ribbon","No hard drives"],a:0,e:"A NAS benefits from a gigabit network connection and a storage configuration such as RAID."}
+]
+};
+
+let current = "A";
+let submitted = false;
+
+function loadExam(version, btn){
+  current = version; submitted = false;
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+  if(btn) btn.classList.add("active");
+  document.getElementById("examTitle").textContent = "Version " + version;
+  document.getElementById("scoreCard").style.display = "none";
+  renderQuestions();
+  updateProgress();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function renderQuestions(){
+  const box = document.getElementById("questions");
+  box.innerHTML = "";
+  exams[current].forEach((item, idx)=>{
+    const card = document.createElement("div");
+    card.className = "qcard";
+    card.id = "qcard-"+idx;
+    card.innerHTML = `
+      <div class="qtop"><div><b>Question ${idx+1}</b></div><span class="tag">${item.t}</span></div>
+      <div class="question">${item.q}</div>
+      <div class="choices">
+        ${item.c.map((choice,i)=>`
+          <label class="choice">
+            <input type="radio" name="q${idx}" value="${i}" onchange="updateProgress()">
+            <span>${String.fromCharCode(65+i)}. ${choice}</span>
+          </label>`).join("")}
+      </div>
+      <div class="feedback" id="fb-${idx}"></div>`;
+    box.appendChild(card);
+  });
+  document.getElementById("total").textContent = exams[current].length;
+}
+function updateProgress(){
+  let answered = 0;
+  exams[current].forEach((_, idx)=>{
+    if(document.querySelector(`input[name="q${idx}"]:checked`)) answered++;
+  });
+  document.getElementById("answered").textContent = answered;
+  document.getElementById("bar").style.width = (answered/exams[current].length*100)+"%";
+  document.getElementById("status").textContent = answered === exams[current].length ? "All questions answered. Submit when ready." : "Keep going. Answer every question before scoring.";
+}
+function gradeExam(){
+  submitted = true;
+  let correct = 0;
+  const topicStats = {};
+  exams[current].forEach((item, idx)=>{
+    if(!topicStats[item.t]) topicStats[item.t] = {right:0,total:0};
+    topicStats[item.t].total++;
+    const selected = document.querySelector(`input[name="q${idx}"]:checked`);
+    const fb = document.getElementById("fb-"+idx);
+    const card = document.getElementById("qcard-"+idx);
+    const selectedVal = selected ? Number(selected.value) : -1;
+    const isCorrect = selectedVal === item.a;
+    if(isCorrect){ correct++; topicStats[item.t].right++; }
+    fb.className = "feedback " + (isCorrect ? "correct" : "incorrect");
+    fb.innerHTML = `<b>${isCorrect ? "Correct!" : "Not yet."}</b> Correct answer: <b>${String.fromCharCode(65+item.a)}. ${item.c[item.a]}</b><br>${item.e}`;
+    card.style.borderColor = isCorrect ? "#86efac" : "#fecaca";
+  });
+  const percent = Math.round(correct/exams[current].length*100);
+  const scoreCard = document.getElementById("scoreCard");
+  scoreCard.style.display = "block";
+  document.getElementById("scoreText").textContent = `${correct}/${exams[current].length} (${percent}%)`;
+  let msg = percent >= 85 ? "Excellent work. You are showing strong exam readiness." :
+            percent >= 70 ? "Good progress. Review the topic boxes below and try another version." :
+            "Keep practicing. Focus on the lower topic scores, then retake a different version.";
+  document.getElementById("scoreMessage").textContent = msg;
+  const report = document.getElementById("topicReport");
+  report.innerHTML = Object.entries(topicStats).map(([topic,s])=>{
+    const p = Math.round(s.right/s.total*100);
+    const advice = p >= 80 ? "Strength" : p >= 60 ? "Review soon" : "Priority review";
+    return `<div class="topic"><b>${topic}</b>${s.right}/${s.total} correct • ${p}%<br><span style="color:var(--muted)">${advice}</span></div>`;
+  }).join("");
+  document.getElementById("status").textContent = `Submitted: ${percent}%`;
+  scoreCard.scrollIntoView({behavior:"smooth",block:"start"});
+}
+function resetExam(){
+  submitted = false;
+  document.getElementById("scoreCard").style.display = "none";
+  renderQuestions();
+  updateProgress();
+}
+loadExam("A");
+</script>
+</body>
+</html>
